@@ -3,21 +3,17 @@ using Restaurants.Domain.Entities;
 using Restaurants.Infrastructure.Persistence;
 
 namespace Restaurants.Infrastructure.Seeders;
-internal class RestaurantSeeder : ISeeder
+internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
 {
-    private readonly RestaurantDbContext _context;
-    public RestaurantSeeder(RestaurantDbContext context)
-    {
-        _context = context;
-    }
+
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
-        if (await _context.Database.CanConnectAsync(cancellationToken) &&
-           !await _context.Restaurants.AnyAsync(cancellationToken))
+        if (await context.Database.CanConnectAsync(cancellationToken) &&
+           !await context.Restaurants.AnyAsync(cancellationToken))
         {
             var restaurant = GetRestaurants();
-            await _context.Restaurants.AddRangeAsync(restaurant, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.Restaurants.AddRangeAsync(restaurant, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 

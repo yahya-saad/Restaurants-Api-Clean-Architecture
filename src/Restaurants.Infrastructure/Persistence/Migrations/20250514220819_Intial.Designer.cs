@@ -11,7 +11,7 @@ using Restaurants.Infrastructure.Persistence;
 namespace Restaurants.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20250514155406_Intial")]
+    [Migration("20250514220819_Intial")]
     partial class Intial
     {
         /// <inheritdoc />

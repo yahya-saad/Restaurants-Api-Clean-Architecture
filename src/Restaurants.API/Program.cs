@@ -1,24 +1,35 @@
+using Restaurants.API.Extensions;
+using Restaurants.Application;
 using Restaurants.Infrastructure;
-using Restaurants.Infrastructure.Seeders;
+using Restaurants.Infrastructure.Persistence;
+using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "Restaurants API V1");
+    });
+    app.MapScalarApiReference();
 }
 
-#region SeedData
-using var scope = app.Services.CreateScope();
-var seeder = scope.ServiceProvider.GetRequiredService<AppSeeder>();
-await seeder.SeedAsync();
-#endregion
+if (builder.Configuration.GetValue<bool>("RunMigrations"))
+{
+    await app.ApplyMigrationsAsync<RestaurantDbContext>();
+    await app.SeedDataAsync();
+}
 
 app.UseHttpsRedirection();
 
