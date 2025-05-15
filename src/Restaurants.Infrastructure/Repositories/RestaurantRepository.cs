@@ -4,10 +4,8 @@ using Restaurants.Domain.Interfaces;
 using Restaurants.Infrastructure.Persistence;
 
 namespace Restaurants.Infrastructure.Repositories;
-internal class RestaurantRepository(RestaurantDbContext dbContext) : IRestaurantRepository
+internal class RestaurantRepository(RestaurantDbContext _dbContext) : IRestaurantRepository
 {
-    private readonly RestaurantDbContext _dbContext = dbContext;
-
     public async Task<IEnumerable<Restaurant>> GetAllAsync(
         CancellationToken cancellationToken = default,
         string? includeProperties = null)
@@ -38,6 +36,13 @@ internal class RestaurantRepository(RestaurantDbContext dbContext) : IRestaurant
             }
         }
         return await query.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+    }
+
+    public async Task<int> AddAsync(Restaurant restaurant, CancellationToken cancellationToken = default)
+    {
+        await _dbContext.Restaurants.AddAsync(restaurant, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return restaurant.Id;
     }
 
 }

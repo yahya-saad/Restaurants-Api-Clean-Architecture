@@ -1,4 +1,5 @@
 using Restaurants.API.Extensions;
+using Restaurants.API.Middlewares;
 using Restaurants.Application;
 using Restaurants.Infrastructure;
 using Restaurants.Infrastructure.Persistence;
@@ -11,6 +12,9 @@ builder.Services.AddOpenApi();
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
+
+builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -31,9 +35,13 @@ if (builder.Configuration.GetValue<bool>("RunMigrations"))
     await app.SeedDataAsync();
 }
 
+app.UseExceptionHandler();
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
 
 app.MapControllers();
 

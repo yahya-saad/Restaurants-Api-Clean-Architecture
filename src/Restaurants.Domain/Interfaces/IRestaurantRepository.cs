@@ -12,7 +12,8 @@ public interface IRestaurantRepository
         CancellationToken cancellationToken = default,
         string? includeProperties = null);
 
-    /* Task AddAsync(Restaurant restaurant);
-     Task UpdateAsync(Restaurant restaurant);
+    Task<int> AddAsync(Restaurant restaurant, CancellationToken cancellationToken = default);
+
+    /*  Task UpdateAsync(Restaurant restaurant);
      Task DeleteAsync(int id);*/
 }
