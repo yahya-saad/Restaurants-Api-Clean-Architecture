@@ -1,10 +1,10 @@
 ﻿namespace Restaurants.Application.Restaurants.Commands.UpdateRestaurant;
 public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurantCommand>
 {
-    private readonly IRestaurantRepository restaurantRepository;
+    private readonly IRestaurantsRepository restaurantRepository;
     private readonly ILogger<UpdateRestaurantCommandHandler> logger;
     private readonly IMapper mapper;
-    public UpdateRestaurantCommandHandler(IRestaurantRepository restaurantRepository, ILogger<UpdateRestaurantCommandHandler> logger, IMapper mapper)
+    public UpdateRestaurantCommandHandler(IRestaurantsRepository restaurantRepository, ILogger<UpdateRestaurantCommandHandler> logger, IMapper mapper)
     {
         this.restaurantRepository = restaurantRepository;
         this.logger = logger;

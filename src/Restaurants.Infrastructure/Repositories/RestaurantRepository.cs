@@ -4,7 +4,7 @@ using Restaurants.Domain.Interfaces;
 using Restaurants.Infrastructure.Persistence;
 
 namespace Restaurants.Infrastructure.Repositories;
-internal class RestaurantRepository(RestaurantDbContext _dbContext) : IRestaurantRepository
+internal class RestaurantRepository(RestaurantDbContext _dbContext) : IRestaurantsRepository
 {
     public async Task<IEnumerable<Restaurant>> GetAllAsync(
         CancellationToken cancellationToken = default,

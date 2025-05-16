@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.JsonPatch.Exceptions;
 namespace Restaurants.Application.Restaurants.Commands.PatchRestaurant;
 public class PatchRestaurantCommandHandler : IRequestHandler<PatchRestaurantCommand>
 {
-    private readonly IRestaurantRepository restaurantRepository;
+    private readonly IRestaurantsRepository restaurantRepository;
     private readonly ILogger<PatchRestaurantCommandHandler> logger;
     private readonly IMapper mapper;
-    public PatchRestaurantCommandHandler(IRestaurantRepository restaurantRepository, ILogger<PatchRestaurantCommandHandler> logger, IMapper mapper)
+    public PatchRestaurantCommandHandler(IRestaurantsRepository restaurantRepository, ILogger<PatchRestaurantCommandHandler> logger, IMapper mapper)
     {
         this.restaurantRepository = restaurantRepository;
         this.logger = logger;

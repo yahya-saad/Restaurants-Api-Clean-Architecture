@@ -1,11 +1,11 @@
 ﻿namespace Restaurants.Application.Restaurants.Commands.CreateRestaurant;
 public class CreateRestaurantCommandHandler : IRequestHandler<CreateRestaurantCommand, int>
 {
-    private readonly IRestaurantRepository restaurantRepository;
+    private readonly IRestaurantsRepository restaurantRepository;
     private readonly ILogger<CreateRestaurantCommandHandler> logger;
     private readonly IMapper mapper;
     public CreateRestaurantCommandHandler(
-        IRestaurantRepository restaurantRepository,
+        IRestaurantsRepository restaurantRepository,
         ILogger<CreateRestaurantCommandHandler> logger,
         IMapper mapper)
     {

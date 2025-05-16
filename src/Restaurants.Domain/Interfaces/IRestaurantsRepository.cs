@@ -1,7 +1,7 @@
 ﻿using Restaurants.Domain.Entities;
 
 namespace Restaurants.Domain.Interfaces;
-public interface IRestaurantRepository
+public interface IRestaurantsRepository
 {
     Task<IEnumerable<Restaurant>> GetAllAsync(
         CancellationToken cancellationToken = default,

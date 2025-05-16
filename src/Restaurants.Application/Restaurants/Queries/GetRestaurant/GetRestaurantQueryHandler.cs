@@ -1,11 +1,11 @@
 ﻿namespace Restaurants.Application.Restaurants.Queries.GetRestaurant;
 public class GetRestaurantQueryHandler : IRequestHandler<GetRestaurantQuery, RestaurantDto>
 {
-    private readonly IRestaurantRepository restaurantRepository;
+    private readonly IRestaurantsRepository restaurantRepository;
     private readonly ILogger<GetRestaurantQueryHandler> logger;
     private readonly IMapper mapper;
     public GetRestaurantQueryHandler(
-        IRestaurantRepository restaurantRepository,
+        IRestaurantsRepository restaurantRepository,
         ILogger<GetRestaurantQueryHandler> logger,
         IMapper mapper)
     {

@@ -2,10 +2,10 @@
 namespace Restaurants.Application.Restaurants.Commands.DeleteRestaurant;
 public class DeleteRestaurantCommandHandler : IRequestHandler<DeleteRestaurantCommand>
 {
-    private readonly IRestaurantRepository restaurantRepository;
+    private readonly IRestaurantsRepository restaurantRepository;
     private readonly ILogger<DeleteRestaurantCommandHandler> logger;
     public DeleteRestaurantCommandHandler(
-        IRestaurantRepository restaurantRepository,
+        IRestaurantsRepository restaurantRepository,
         ILogger<DeleteRestaurantCommandHandler> logger)
     {
         this.restaurantRepository = restaurantRepository;
