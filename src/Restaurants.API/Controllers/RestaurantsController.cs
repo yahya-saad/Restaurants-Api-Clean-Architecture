@@ -13,7 +13,7 @@ namespace Restaurants.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RestaurantController(IMediator mediator) : ControllerBase
+public class RestaurantsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     [EndpointSummary("Get all restaurants")]
