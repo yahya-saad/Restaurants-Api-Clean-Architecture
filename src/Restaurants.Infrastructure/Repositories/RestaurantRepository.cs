@@ -45,5 +45,16 @@ internal class RestaurantRepository(RestaurantDbContext _dbContext) : IRestauran
         return restaurant.Id;
     }
 
+    public async Task DeleteAsync(Restaurant restaurant, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Remove(restaurant);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(Restaurant restaurant, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Update(restaurant);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }
 

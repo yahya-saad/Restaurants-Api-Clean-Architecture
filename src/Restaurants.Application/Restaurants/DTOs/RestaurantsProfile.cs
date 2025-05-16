@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Restaurants.Domain.Entities;
-
-namespace Restaurants.Application.Restaurants.DTOs;
+﻿namespace Restaurants.Application.Restaurants.DTOs;
 public class RestaurantsProfile : Profile
 {
     public RestaurantsProfile()
@@ -12,11 +9,10 @@ public class RestaurantsProfile : Profile
             .ForMember(dest => dest.PostalCode, opt => opt.MapFrom(src => src.Address.PostalCode == null ? null : src.Address.PostalCode))
             .ForMember(dest => dest.Dishes, opt => opt.MapFrom(src => src.Dishes));
 
-        CreateMap<CreateResaturantDto, Restaurant>();
+        CreateMap<CreateRestaurantDto, Restaurant>();
 
-
-
-
+        CreateMap<PatchRestaurantDto, Restaurant>().ReverseMap();
+        CreateMap<UpdateRestaurantDto, Restaurant>().ReverseMap();
 
     }
 }

@@ -1,7 +1,6 @@
-﻿using Restaurants.Domain.Entities;
-
+﻿
 namespace Restaurants.Application.Restaurants.DTOs;
-public class CreateResaturantDto
+public class CreateRestaurantDto
 {
     public string Name { get; set; } = default!;
     public string Description { get; set; } = default!;

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Restaurants.API.Middlewares;
 
-public class GlobalExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
+public sealed class GlobalExceptionHandler(IProblemDetailsService problemDetailsService, ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
@@ -22,6 +22,8 @@ public class GlobalExceptionHandler(IProblemDetailsService problemDetailsService
             Exception = exception,
             ProblemDetails = problemDetails,
         };
+
+        logger.LogError("An unhandled exception occurred: {Message}", exception.Message);
 
         return await problemDetailsService.TryWriteAsync(context);
     }

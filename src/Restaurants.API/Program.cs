@@ -4,16 +4,29 @@ using Restaurants.Application;
 using Restaurants.Infrastructure;
 using Restaurants.Infrastructure.Persistence;
 using Scalar.AspNetCore;
+using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<RequestLoggingFliter>();
+}).AddNewtonsoftJson();
+
 builder.Services.AddOpenApi();
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+});
+
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
