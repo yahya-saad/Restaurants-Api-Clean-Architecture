@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System.Diagnostics;
 
-namespace Restaurants.API.Middlewares;
+namespace Restaurants.API.Filters;
 
 public class RequestLoggingFliter(ILogger<RequestLoggingFliter> logger) : IAsyncActionFilter
 {

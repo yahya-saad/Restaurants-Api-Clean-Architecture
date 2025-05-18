@@ -1,45 +1,29 @@
 using Restaurants.API.Extensions;
-using Restaurants.API.Middlewares;
 using Restaurants.Application;
+using Restaurants.Domain.Entities;
 using Restaurants.Infrastructure;
 using Restaurants.Infrastructure.Persistence;
 using Scalar.AspNetCore;
-using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddPresentation();
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<RequestLoggingFliter>();
-}).AddNewtonsoftJson();
-
-builder.Services.AddOpenApi();
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
-
-builder.Host.UseSerilog((context, configuration) =>
-{
-    configuration.ReadFrom.Configuration(context.Configuration);
-});
-
-builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
-builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
-builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
-    app.UseSwaggerUI(options =>
+    app.MapScalarApiReference(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "Restaurants API V1");
+        options.Title = "Restaurants API";
+        options.OpenApiRoutePattern = "/swagger/v1/swagger.json";
     });
-    app.MapScalarApiReference();
 }
 
 if (builder.Configuration.GetValue<bool>("RunMigrations"))
@@ -50,11 +34,11 @@ if (builder.Configuration.GetValue<bool>("RunMigrations"))
 
 app.UseExceptionHandler();
 
-
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.MapGroup("/api/Identity").MapIdentityApi<User>();
 
+app.UseAuthorization();
 
 app.MapControllers();
 

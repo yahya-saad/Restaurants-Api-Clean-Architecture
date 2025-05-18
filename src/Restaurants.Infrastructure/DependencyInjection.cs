@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Restaurants.Domain.Entities;
 using Restaurants.Domain.Interfaces;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
@@ -11,10 +13,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddPersistence(configuration);
+        services.AddPersistence(configuration)
+            .AddIdentity();
         return services;
     }
-
 
     private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
@@ -23,10 +25,21 @@ public static class DependencyInjection
 
         services.AddScoped<ISeeder, RestaurantSeeder>();
         services.AddScoped<ISeeder, DishSeeder>();
+        services.AddScoped<ISeeder, RolesSeeder>();
         services.AddScoped<AppSeeder>();
+
 
         services.AddScoped<IRestaurantsRepository, RestaurantRepository>();
         services.AddScoped<IDishesRepository, DishesRepository>();
+        return services;
+    }
+
+    private static IServiceCollection AddIdentity(this IServiceCollection services)
+    {
+        services.AddIdentityCore<User>()
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<RestaurantDbContext>()
+
         return services;
     }
 }

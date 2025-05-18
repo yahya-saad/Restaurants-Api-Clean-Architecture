@@ -2,17 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Restaurants.Infrastructure.Seeders;
-public class AppSeeder
+public class AppSeeder(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-    public AppSeeder(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         var seeders = scope.ServiceProvider.GetServices<ISeeder>(); // Get all ISeeder implementations
 
         foreach (var seeder in seeders)
