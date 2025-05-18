@@ -73,5 +73,4 @@ public class UserController(IMediator mediator) : ControllerBase
         await mediator.Send(command);
         return NoContent();
     }
-
 }

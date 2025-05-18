@@ -23,6 +23,13 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
             .Select(c => c.Value)
             .ToList();
 
-        return new CurrentUser(userId, email, roles);
+        var nationality = user.FindFirstValue("Nationality");
+        var dateOfBirthString = user.FindFirstValue("DateOfBirth");
+
+        var dateofBirth = dateOfBirthString != null
+            ? DateOnly.ParseExact(dateOfBirthString, "yyyy-MM-dd")
+            : (DateOnly?)null;
+
+        return new CurrentUser(userId, email, roles, nationality, dateofBirth);
     }
 }

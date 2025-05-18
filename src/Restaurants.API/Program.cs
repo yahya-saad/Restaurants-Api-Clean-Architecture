@@ -26,6 +26,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+
 if (builder.Configuration.GetValue<bool>("RunMigrations"))
 {
     await app.ApplyMigrationsAsync<RestaurantDbContext>();

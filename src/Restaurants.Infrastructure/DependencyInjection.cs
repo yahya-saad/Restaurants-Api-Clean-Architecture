@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Interfaces;
+using Restaurants.Infrastructure.Authorization;
+using Restaurants.Infrastructure.Authorization.Requirement;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
 using Restaurants.Infrastructure.Seeders;
@@ -14,7 +17,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddPersistence(configuration)
-            .AddIdentity();
+            .AddIdentity()
+            .AddAuthorization();
+
         return services;
     }
 
@@ -38,7 +43,21 @@ public static class DependencyInjection
     {
         services.AddIdentityCore<User>()
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<RestaurantDbContext>()
+            .AddClaimsPrincipalFactory<RestaurantUserClaimsPrincipalFactory>()
+            .AddEntityFrameworkStores<RestaurantDbContext>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddAuthorization(this IServiceCollection services)
+    {
+        services.AddAuthorizationCore(options =>
+        {
+            options.AddPolicy(PolicyNames.HasNationality, policy => policy.RequireClaim(AppClaimTypes.Nationality, "Egyptian"));
+            options.AddPolicy(PolicyNames.AtLeast18, policy => policy.Requirements.Add(new MinimumAgeRequirement(18)));
+        });
+
+        services.AddTransient<IAuthorizationHandler, MinimumAgeRequirementHandle>();
 
         return services;
     }
