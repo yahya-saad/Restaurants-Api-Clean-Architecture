@@ -24,5 +24,10 @@ public sealed class RestaurantDbContext(DbContextOptions<RestaurantDbContext> op
             .Property(d => d.Price)
             .HasPrecision(10, 2);
 
+        modelBuilder.Entity<User>()
+            .HasMany(r => r.OwndedRestaurants)
+            .WithOne(r => r.Owner)
+            .HasForeignKey(r => r.OwnerId);
+
     }
 }

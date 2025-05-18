@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Dishes.Commands.CreateDish;
 using Restaurants.Application.Dishes.Commands.DeleteAllDishes;
@@ -7,6 +8,8 @@ using Restaurants.Application.Dishes.Commands.UpdateDish;
 using Restaurants.Application.Dishes.DTOs;
 using Restaurants.Application.Dishes.Queries.GetAllDishes;
 using Restaurants.Application.Dishes.Queries.GetDish;
+using Restaurants.Domain.Constants;
+using Restaurants.Infrastructure.Authorization;
 
 namespace Restaurants.API.Controllers;
 
@@ -37,6 +40,7 @@ public class DishesController(IMediator mediator) : ControllerBase
 
 
     [HttpPost]
+    [Authorize(Roles = UserRoles.Owner)]
     [EndpointSummary("Create a new dish")]
     [EndpointDescription("Creates a new dish for a specific restaurant")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -49,6 +53,7 @@ public class DishesController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Policy = PolicyNames.CanDelete)]
     [EndpointSummary("Delete All dishes")]
     [EndpointDescription("Deletes a dish by its ID for a specific restaurant")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -60,6 +65,7 @@ public class DishesController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{dishId:int}")]
+    [Authorize(Policy = PolicyNames.CanDelete)]
     [EndpointSummary("Delete a dish by ID")]
     [EndpointDescription("Deletes a dish by its ID for a specific restaurant")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -71,6 +77,7 @@ public class DishesController(IMediator mediator) : ControllerBase
     }
 
     [HttpPut("{dishId:int}")]
+    [Authorize(Roles = UserRoles.Owner)]
     [EndpointSummary("Update a dish")]
     [EndpointDescription("Updates a dish by ID for a specific restaurant")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

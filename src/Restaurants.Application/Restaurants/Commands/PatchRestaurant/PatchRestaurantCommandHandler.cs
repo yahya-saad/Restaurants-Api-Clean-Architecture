@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.JsonPatch.Exceptions;
+using Restaurants.Domain.Constants;
 
 namespace Restaurants.Application.Restaurants.Commands.PatchRestaurant;
 public class PatchRestaurantCommandHandler : IRequestHandler<PatchRestaurantCommand>
@@ -7,11 +8,13 @@ public class PatchRestaurantCommandHandler : IRequestHandler<PatchRestaurantComm
     private readonly IRestaurantsRepository restaurantRepository;
     private readonly ILogger<PatchRestaurantCommandHandler> logger;
     private readonly IMapper mapper;
-    public PatchRestaurantCommandHandler(IRestaurantsRepository restaurantRepository, ILogger<PatchRestaurantCommandHandler> logger, IMapper mapper)
+    private readonly IRestaurantAuthorizationService restaurantAuthorizationService;
+    public PatchRestaurantCommandHandler(IRestaurantsRepository restaurantRepository, ILogger<PatchRestaurantCommandHandler> logger, IMapper mapper, IRestaurantAuthorizationService restaurantAuthorizationService)
     {
         this.restaurantRepository = restaurantRepository;
         this.logger = logger;
         this.mapper = mapper;
+        this.restaurantAuthorizationService = restaurantAuthorizationService;
     }
 
     public async Task Handle(PatchRestaurantCommand request, CancellationToken cancellationToken)
@@ -24,6 +27,9 @@ public class PatchRestaurantCommandHandler : IRequestHandler<PatchRestaurantComm
             logger.LogWarning($"Restaurant with id {request.Id} not found");
             throw new NotFoundException(nameof(Restaurant), request.Id.ToString());
         }
+
+        if (!restaurantAuthorizationService.Authorize(restaurant, ResourseOperation.Delete))
+            throw new ForbiddenException();
 
         var dto = mapper.Map<PatchRestaurantDto>(restaurant);
 

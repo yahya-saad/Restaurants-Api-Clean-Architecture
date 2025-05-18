@@ -10,16 +10,15 @@ using Restaurants.Application.Restaurants.DTOs;
 using Restaurants.Application.Restaurants.Queries.GetAllRestaurants;
 using Restaurants.Application.Restaurants.Queries.GetRestaurant;
 using Restaurants.Domain.Constants;
+using Restaurants.Infrastructure.Authorization;
 
 namespace Restaurants.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class RestaurantsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    [AllowAnonymous]
     [EndpointSummary("Get all restaurants")]
     [EndpointDescription("Retrieves a list of all restaurants")]
     [ProducesResponseType(typeof(IEnumerable<RestaurantDto>), StatusCodes.Status200OK)]
@@ -30,7 +29,6 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    [AllowAnonymous]
     [EndpointSummary("Get restaurant by ID")]
     [EndpointDescription("Retrieves a restaurant by its ID")]
     [ProducesResponseType(typeof(RestaurantDto), StatusCodes.Status200OK)]
@@ -42,7 +40,7 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = UserRoles.Owner)]
+    [Authorize()]
     [EndpointSummary("Create a new restaurant")]
     [EndpointDescription("Creates a new restaurant")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -56,6 +54,7 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = PolicyNames.CanDelete)]
     [EndpointSummary("Delete a restaurant")]
     [EndpointDescription("Deletes a restaurant by its ID")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -67,6 +66,7 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("{id:int}")]
+    [Authorize(Roles = UserRoles.Owner)]
     [EndpointSummary("Partially update a restaurant")]
     [EndpointDescription("<b>Partially</b> updates a restaurant by its ID")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -80,6 +80,7 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
 
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = UserRoles.Owner)]
     [EndpointSummary("Update a restaurant")]
     [EndpointDescription("Updates a restaurant by its ID")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

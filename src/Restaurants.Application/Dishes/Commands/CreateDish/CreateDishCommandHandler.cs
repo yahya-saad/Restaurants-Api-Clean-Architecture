@@ -1,4 +1,6 @@
 ﻿
+using Restaurants.Domain.Constants;
+
 namespace Restaurants.Application.Dishes.Commands.CreateDish;
 public class CreateDishCommandHandler : IRequestHandler<CreateDishCommand, int>
 {
@@ -6,13 +8,15 @@ public class CreateDishCommandHandler : IRequestHandler<CreateDishCommand, int>
     private readonly IRestaurantsRepository _restaurantRepository;
     private readonly IDishesRepository _dishesRepository;
     private readonly IMapper _mapper;
+    private readonly IRestaurantAuthorizationService restaurantAuthorizationService;
 
-    public CreateDishCommandHandler(ILogger<CreateDishCommandHandler> logger, IRestaurantsRepository restaurantRepository, IDishesRepository dishesRepository, IMapper mapper)
+    public CreateDishCommandHandler(ILogger<CreateDishCommandHandler> logger, IRestaurantsRepository restaurantRepository, IDishesRepository dishesRepository, IMapper mapper, IRestaurantAuthorizationService restaurantAuthorizationService)
     {
         _logger = logger;
         _restaurantRepository = restaurantRepository;
         _dishesRepository = dishesRepository;
         _mapper = mapper;
+        this.restaurantAuthorizationService = restaurantAuthorizationService;
     }
 
     async Task<int> IRequestHandler<CreateDishCommand, int>.Handle(CreateDishCommand request, CancellationToken cancellationToken)
@@ -25,6 +29,10 @@ public class CreateDishCommandHandler : IRequestHandler<CreateDishCommand, int>
             _logger.LogWarning("Restaurant with ID {RestaurantId} not found", request.RestaurantId);
             throw new NotFoundException(nameof(Restaurant), request.RestaurantId.ToString());
         }
+
+        if (!restaurantAuthorizationService.Authorize(restaurant, ResourseOperation.Update))
+            throw new ForbiddenException();
+
         var dish = _mapper.Map<Dish>(request.DishDto);
         dish.RestaurantId = request.RestaurantId;
 

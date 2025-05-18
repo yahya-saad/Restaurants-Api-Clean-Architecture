@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Interfaces;
 using Restaurants.Infrastructure.Authorization;
 using Restaurants.Infrastructure.Authorization.Requirement;
+using Restaurants.Infrastructure.Authorization.Services;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
 using Restaurants.Infrastructure.Seeders;
@@ -55,9 +57,13 @@ public static class DependencyInjection
         {
             options.AddPolicy(PolicyNames.HasNationality, policy => policy.RequireClaim(AppClaimTypes.Nationality, "Egyptian"));
             options.AddPolicy(PolicyNames.AtLeast18, policy => policy.Requirements.Add(new MinimumAgeRequirement(18)));
+            options.AddPolicy(PolicyNames.CanDelete, policy => policy.RequireRole(UserRoles.Owner, UserRoles.Admin));
+            options.AddPolicy(PolicyNames.OwnsAtLeastTwoRestaurants, policy => policy.Requirements.Add(new OwnsAtLeastRequirement(2)));
         });
 
-        services.AddTransient<IAuthorizationHandler, MinimumAgeRequirementHandle>();
+        services.AddTransient<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+        services.AddTransient<IAuthorizationHandler, OwnsAtLeastRequirementHandler>();
+        services.AddTransient<IRestaurantAuthorizationService, RestaurantAuthorizationService>();
 
         return services;
     }

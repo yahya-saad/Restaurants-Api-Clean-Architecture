@@ -2,7 +2,7 @@
 using Restaurants.Application.Common.Identity;
 
 namespace Restaurants.Infrastructure.Authorization.Requirement;
-internal class MinimumAgeRequirementHandle(IUserContext userContext) : AuthorizationHandler<MinimumAgeRequirement>
+internal class MinimumAgeRequirementHandler(IUserContext userContext) : AuthorizationHandler<MinimumAgeRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
     {

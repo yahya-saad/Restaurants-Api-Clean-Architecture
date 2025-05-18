@@ -1,16 +1,20 @@
 ﻿
+using Restaurants.Domain.Constants;
+
 namespace Restaurants.Application.Dishes.Commands.DeleteDish;
 public class DeleteDishCommandHandler : IRequestHandler<DeleteDishCommand>
 {
     private readonly ILogger<DeleteDishCommandHandler> _logger;
     private readonly IRestaurantsRepository _restaurantRepository;
     private readonly IDishesRepository _dishesRepository;
+    private readonly IRestaurantAuthorizationService restaurantAuthorizationService;
 
-    public DeleteDishCommandHandler(ILogger<DeleteDishCommandHandler> logger, IRestaurantsRepository restaurantRepository, IDishesRepository dishesRepository)
+    public DeleteDishCommandHandler(ILogger<DeleteDishCommandHandler> logger, IRestaurantsRepository restaurantRepository, IDishesRepository dishesRepository, IRestaurantAuthorizationService restaurantAuthorizationService)
     {
         _logger = logger;
         _restaurantRepository = restaurantRepository;
         _dishesRepository = dishesRepository;
+        this.restaurantAuthorizationService = restaurantAuthorizationService;
     }
 
 
@@ -23,6 +27,10 @@ public class DeleteDishCommandHandler : IRequestHandler<DeleteDishCommand>
             _logger.LogWarning("Restaurant with ID {RestaurantId} not found", request.RestaurantId);
             throw new NotFoundException(nameof(Restaurant), request.RestaurantId.ToString());
         }
+
+        if (!restaurantAuthorizationService.Authorize(restaurant, ResourseOperation.Delete))
+            throw new ForbiddenException();
+
 
         var dish = await _dishesRepository.GetByIdAsync(request.RestaurantId, request.DishId, cancellationToken);
         if (dish == null)

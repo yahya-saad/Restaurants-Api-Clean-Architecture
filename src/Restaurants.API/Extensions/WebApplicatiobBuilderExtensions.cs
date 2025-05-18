@@ -28,6 +28,7 @@ public static class WebApplicatiobBuilderExtensions
 
 
         #region exception handlers
+        builder.Services.AddExceptionHandler<ForbiddenExceptionHandler>();
         builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
         builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

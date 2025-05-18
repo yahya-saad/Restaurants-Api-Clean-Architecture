@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Infrastructure.Authorization;
+using System.Security.Claims;
 
 namespace Restaurants.API.Controllers;
 
@@ -31,5 +32,19 @@ public class TestingController : ControllerBase
     {
         return Ok();
 
+    }
+
+    [HttpGet("roles")]
+    [Authorize]
+    public IActionResult GetRoles()
+    {
+        return Ok(User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value));
+    }
+
+    [HttpGet("policy/OwnsAtLeastTwoRestaurants")]
+    [Authorize(Policy = PolicyNames.OwnsAtLeastTwoRestaurants)]
+    public IActionResult OwnsAtLeastTwoRestaurants()
+    {
+        return Ok();
     }
 }
