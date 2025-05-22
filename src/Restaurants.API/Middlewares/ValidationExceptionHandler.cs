@@ -25,7 +25,7 @@ public sealed class ValidationExceptionHandler(IProblemDetailsService problemDet
 
         var problemDetails = new ProblemDetails
         {
-            Title = "Validation error",
+            Title = "Validation Failed",
             Detail = "One or more validation error",
             Status = StatusCodes.Status400BadRequest
         };

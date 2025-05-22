@@ -3,7 +3,7 @@ using Restaurants.Application.Common.Identity;
 using Restaurants.Domain.Interfaces;
 
 namespace Restaurants.Infrastructure.Authorization.Requirement;
-public class OwnsAtLeastRequirementHandler(IUserContext userContext, IRestaurantsRepository restaurantsRepository) : AuthorizationHandler<OwnsAtLeastRequirement>
+internal class OwnsAtLeastRequirementHandler(IUserContext userContext, IRestaurantsRepository restaurantsRepository) : AuthorizationHandler<OwnsAtLeastRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OwnsAtLeastRequirement requirement)
     {

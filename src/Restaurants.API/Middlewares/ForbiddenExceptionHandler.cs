@@ -4,7 +4,7 @@ using Restaurants.Domain.Exceptions;
 
 namespace Restaurants.API.Middlewares;
 
-public class ForbiddenExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
+public sealed class ForbiddenExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {

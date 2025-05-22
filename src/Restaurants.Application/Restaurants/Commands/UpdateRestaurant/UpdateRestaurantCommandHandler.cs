@@ -26,7 +26,7 @@ public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurantCo
             throw new NotFoundException(nameof(Restaurant), request.Id.ToString());
         }
 
-        if (!restaurantAuthorizationService.Authorize(restaurant, ResourseOperation.Delete))
+        if (!restaurantAuthorizationService.Authorize(restaurant, ResourseOperation.Update))
             throw new ForbiddenException();
 
         mapper.Map(request.Dto, restaurant);

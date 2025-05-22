@@ -4,7 +4,7 @@ using Restaurants.Domain.Exceptions;
 
 namespace Restaurants.API.Middlewares;
 
-public class NotFoundExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
+public sealed class NotFoundExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
@@ -14,7 +14,7 @@ public class NotFoundExceptionHandler(IProblemDetailsService problemDetailsServi
         }
         var problemDetails = new ProblemDetails
         {
-            Title = "Resource not found",
+            Title = "Resource Not Found",
             Detail = notFoundException.Message,
             Status = StatusCodes.Status404NotFound
         };

@@ -22,7 +22,7 @@ public class RestaurantAuthorizationService(ILogger<RestaurantAuthorizationServi
         }
 
         // [Admin] can delete resourse
-        if (operation == ResourseOperation.Delete && user.isInRole(UserRoles.Admin))
+        if (operation == ResourseOperation.Delete && user.IsInRole(UserRoles.Admin))
         {
             logger.LogInformation("[Admin] delete operation -- succesfull authorization");
             return true;

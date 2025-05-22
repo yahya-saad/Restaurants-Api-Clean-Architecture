@@ -22,9 +22,14 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
     [EndpointSummary("Get all restaurants")]
     [EndpointDescription("Retrieves a list of all restaurants")]
     [ProducesResponseType(typeof(IEnumerable<RestaurantDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] GetAllRestaurantsQuery query)
     {
-        var restaurants = await mediator.Send(new GetAllRestaurantsQuery());
+        if (ModelState.IsValid == false)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var restaurants = await mediator.Send(query);
         return Ok(restaurants);
     }
 

@@ -1,11 +1,18 @@
-﻿using Restaurants.Domain.Entities;
+﻿using Restaurants.Domain.Constants;
+using Restaurants.Domain.Entities;
+using System.Linq.Expressions;
 
 namespace Restaurants.Domain.Interfaces;
 public interface IRestaurantsRepository
 {
-    Task<IEnumerable<Restaurant>> GetAllAsync(
-        CancellationToken cancellationToken = default,
-        string? includeProperties = null);
+    Task<IEnumerable<Restaurant>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<(IEnumerable<Restaurant>, int count)> GetAllAsync(
+         int pageSize, int pageNumber,
+         CancellationToken cancellationToken = default,
+         Expression<Func<Restaurant, bool>>? filter = null,
+         string? SortBy = null,
+        SortDirection? sortDirection = null,
+         string? includeProperties = null);
 
     Task<Restaurant?> GetByIdAsync(
         int id,

@@ -29,6 +29,7 @@ public class CreateRestaurantCommandHandler : IRequestHandler<CreateRestaurantCo
 
         var restaurant = mapper.Map<Restaurant>(request.Dto);
         restaurant.OwnerId = currentUser.Id;
+
         int id = await restaurantRepository.AddAsync(restaurant, cancellationToken);
         return id;
     }

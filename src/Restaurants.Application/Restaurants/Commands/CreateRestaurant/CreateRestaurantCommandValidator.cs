@@ -9,8 +9,8 @@ public class CreateRestaurantCommandValidator : AbstractValidator<CreateRestaura
             .WithMessage("Name is required.")
             .MinimumLength(3)
             .WithMessage("Name must be at least 3 characters long.")
-            .MaximumLength(100)
-            .WithMessage("Name must not exceed 100 characters.");
+            .MaximumLength(50)
+            .WithMessage("Name must not exceed 50 characters.");
 
         RuleFor(x => x.Dto.Description)
             .NotEmpty()
@@ -27,7 +27,7 @@ public class CreateRestaurantCommandValidator : AbstractValidator<CreateRestaura
             .WithMessage("Please provide a valid email address.");
 
         RuleFor(x => x.Dto.ContractNumber)
-            .Matches(@"^(?:\+20|0)?1[0125][0-9]{8}$") // egyptian numbers
+            .Matches(@"^(?:\+201[0125]|01[0125])[0-9]{8}$")
             .WithMessage("Please provide a valid phone number.");
 
         RuleFor(x => x.Dto.Address.PostalCode)

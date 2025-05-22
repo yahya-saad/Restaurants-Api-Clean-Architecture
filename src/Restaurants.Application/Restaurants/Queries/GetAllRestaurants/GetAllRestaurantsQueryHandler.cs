@@ -1,5 +1,8 @@
-﻿namespace Restaurants.Application.Restaurants.Queries.GetAllRestaurants;
-public class GetAllRestaurantsQueryHandler : IRequestHandler<GetAllRestaurantsQuery, IEnumerable<RestaurantDto>>
+﻿using Restaurants.Application.Common.Pagination;
+using System.Linq.Expressions;
+
+namespace Restaurants.Application.Restaurants.Queries.GetAllRestaurants;
+public class GetAllRestaurantsQueryHandler : IRequestHandler<GetAllRestaurantsQuery, PaginatedResult<RestaurantDto>>
 {
     private readonly IRestaurantsRepository restaurantRepository;
     private readonly ILogger<GetAllRestaurantsQueryHandler> logger;
@@ -13,13 +16,34 @@ public class GetAllRestaurantsQueryHandler : IRequestHandler<GetAllRestaurantsQu
         this.logger = logger;
         this.mapper = mapper;
     }
-
-    public async Task<IEnumerable<RestaurantDto>> Handle(GetAllRestaurantsQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<RestaurantDto>> Handle(GetAllRestaurantsQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Fetching all restaurants");
-        var restaurants = await restaurantRepository.GetAllAsync(cancellationToken, includeProperties: "Dishes");
+        var search = request.search?.Trim();
+        Expression<Func<Restaurant, bool>>? filter = r => search == null || r.Name.Contains(search) || r.Description.Contains(search);
+
+        var (restaurants, count) = await restaurantRepository.GetAllAsync(
+            request.pageSize, request.pageNumber,
+            filter: filter,
+            SortBy: request.SortBy, sortDirection: request.SortDirection,
+            includeProperties: "Dishes",
+            cancellationToken: cancellationToken);
+
         var dtoList = mapper.Map<IEnumerable<RestaurantDto>>(restaurants);
-        return dtoList;
+
+        var paginatedResult = new PaginatedResult<RestaurantDto>
+        {
+            Data = dtoList,
+            Pagination = new PaginationMetadata
+            {
+                PageNumber = request.pageNumber,
+                PageSize = request.pageSize,
+                TotalCount = count,
+                TotalPages = (int)Math.Ceiling((double)count / request.pageSize)
+            }
+        };
+
+        return paginatedResult;
     }
 }
 

@@ -1,17 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Interfaces;
 using Restaurants.Infrastructure.Persistence;
+using Restaurants.Infrastructure.Persistence.Extensions;
+using System.Linq.Expressions;
 
 namespace Restaurants.Infrastructure.Repositories;
 internal class RestaurantRepository(RestaurantDbContext _dbContext) : IRestaurantsRepository
 {
-    public async Task<IEnumerable<Restaurant>> GetAllAsync(
+
+    public async Task<IEnumerable<Restaurant>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Restaurants
+          .AsNoTracking()
+          .ToListAsync(cancellationToken);
+    }
+
+    public async Task<(IEnumerable<Restaurant>, int count)> GetAllAsync(
+        int pageSize, int pageNumber,
         CancellationToken cancellationToken = default,
+        Expression<Func<Restaurant, bool>>? filter = null,
+        string? SortBy = null,
+        SortDirection? sortDirection = null,
         string? includeProperties = null)
     {
         IQueryable<Restaurant> query = _dbContext.Restaurants;
 
+        // Apply includes
         if (!string.IsNullOrEmpty(includeProperties))
         {
             foreach (var includeProperty in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
@@ -19,8 +35,29 @@ internal class RestaurantRepository(RestaurantDbContext _dbContext) : IRestauran
                 query = query.Include(includeProperty.Trim());
             }
         }
-        return await query.ToListAsync(cancellationToken);
+
+        // Apply filter
+        if (filter != null)
+        {
+            query = query.Where(filter);
+        }
+
+        var totalCount = await query.CountAsync();
+
+        // sorting
+        if (!string.IsNullOrEmpty(SortBy))
+        {
+            query = query.ApplySorting(SortBy, sortDirection);
+        }
+
+        // Paginate
+        query = query.ApplyPagination(pageNumber, pageSize);
+
+        var items = await query.ToListAsync();
+
+        return (items, totalCount);
     }
+
     public async Task<Restaurant?> GetByIdAsync(
         int id,
         CancellationToken cancellationToken = default,
@@ -56,5 +93,7 @@ internal class RestaurantRepository(RestaurantDbContext _dbContext) : IRestauran
         _dbContext.Update(restaurant);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+
 }
 

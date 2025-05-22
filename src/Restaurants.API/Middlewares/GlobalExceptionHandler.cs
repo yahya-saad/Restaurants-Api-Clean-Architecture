@@ -15,6 +15,7 @@ public sealed class GlobalExceptionHandler(IProblemDetailsService problemDetails
             Title = "Internal Server Error",
             Detail = "An error occurred while processing your request.",
         };
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
         var context = new ProblemDetailsContext
         {
