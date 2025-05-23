@@ -20,10 +20,12 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
 
     private IEnumerable<Restaurant> GetRestaurants()
     {
+        var owner = new User { Email = "seed-user@test.com" };
         List<Restaurant> restaurants = new()
     {
         new Restaurant
         {
+            Owner = owner,
             Name = "The Italian Kitchen",
             Description = "Authentic Italian cuisine with a modern twist.",
             Category = "Italian",
@@ -39,6 +41,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "Sushi World",
             Description = "Fresh sushi and sashimi prepared by expert chefs.",
             Category = "Japanese",
@@ -54,6 +57,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "Spice of India",
             Description = "Traditional Indian dishes with rich spices and flavors.",
             Category = "Indian",
@@ -69,6 +73,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "Burger Haven",
             Description = "Gourmet burgers with locally sourced ingredients.",
             Category = "American",
@@ -84,6 +89,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "Taco Fiesta",
             Description = "Vibrant Mexican food with a street-style feel.",
             Category = "Mexican",
@@ -99,6 +105,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "Green Garden",
             Description = "Healthy plant-based meals and smoothies.",
             Category = "Vegan",
@@ -114,6 +121,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "Le Petit Bistro",
             Description = "Cozy French bistro with classic dishes and wine.",
             Category = "French",
@@ -129,6 +137,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "Dragon Wok",
             Description = "Fast and flavorful Chinese takeout and delivery.",
             Category = "Chinese",
@@ -144,6 +153,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "The Greek Table",
             Description = "Mediterranean classics like gyros, souvlaki, and hummus.",
             Category = "Greek",
@@ -159,6 +169,7 @@ internal class RestaurantSeeder(RestaurantDbContext context) : ISeeder
         },
         new Restaurant
         {
+            Owner = owner,
             Name = "BBQ Barn",
             Description = "Slow-smoked meats and homemade sauces.",
             Category = "BBQ",

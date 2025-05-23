@@ -48,8 +48,8 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpPost("userRole")]
     [Authorize(Roles = UserRoles.Admin)]
-    [EndpointSummary("Assign user role")]
-    [EndpointDescription("Assigns a role to a user")]
+    [EndpointSummary("[Admin] Assign user role")]
+    [EndpointDescription("Assigns a role to a user - <b> Admin </b>")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -62,8 +62,8 @@ public class UserController(IMediator mediator) : ControllerBase
 
     [HttpDelete("userRole")]
     [Authorize(Roles = UserRoles.Admin)]
-    [EndpointSummary("Unassign user role")]
-    [EndpointDescription("Unassign a role to a user")]
+    [EndpointSummary("[Admin] Unassign user role")]
+    [EndpointDescription("Unassign a role to a user - <b> Admin </b>")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

@@ -9,9 +9,11 @@ using Restaurants.Domain.Interfaces;
 using Restaurants.Infrastructure.Authorization;
 using Restaurants.Infrastructure.Authorization.Requirement;
 using Restaurants.Infrastructure.Authorization.Services;
+using Restaurants.Infrastructure.Configurations;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
 using Restaurants.Infrastructure.Seeders;
+using Restaurants.Infrastructure.Storage;
 
 namespace Restaurants.Infrastructure;
 public static class DependencyInjection
@@ -20,7 +22,9 @@ public static class DependencyInjection
     {
         services.AddPersistence(configuration)
             .AddIdentity()
-            .AddAuthorization();
+            .AddAuthorization()
+            .AddBlobStorage();
+
 
         return services;
     }
@@ -65,6 +69,13 @@ public static class DependencyInjection
         services.AddTransient<IAuthorizationHandler, OwnsAtLeastRequirementHandler>();
         services.AddTransient<IRestaurantAuthorizationService, RestaurantAuthorizationService>();
 
+        return services;
+    }
+
+    private static IServiceCollection AddBlobStorage(this IServiceCollection services)
+    {
+        services.ConfigureOptions<BlobStorageSetup>();
+        services.AddSingleton<IBlobStorageService, BlobStorageService>();
         return services;
     }
 }

@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Restaurants.Commands.CreateRestaurant;
 using Restaurants.Application.Restaurants.Commands.DeleteRestaurant;
+using Restaurants.Application.Restaurants.Commands.DeleteRestaurantLogo;
 using Restaurants.Application.Restaurants.Commands.PatchRestaurant;
 using Restaurants.Application.Restaurants.Commands.UpdateRestaurant;
+using Restaurants.Application.Restaurants.Commands.UploadRestaurantLogo;
 using Restaurants.Application.Restaurants.DTOs;
 using Restaurants.Application.Restaurants.Queries.GetAllRestaurants;
 using Restaurants.Application.Restaurants.Queries.GetRestaurant;
@@ -97,5 +99,41 @@ public class RestaurantsController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+
+    [HttpPost("{id:int}/logo")]
+    [Authorize(Roles = UserRoles.Owner)]
+    [EndpointSummary("Upload restaurant logo")]
+    [EndpointDescription("Uploads a logo for a restaurant")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UploadRestaurantLogo(int id, IFormFile file)
+    {
+        using var stream = file.OpenReadStream();
+
+        var command = new UploadRestaurantLogoCommand(
+            id,
+            $"{id}-{file.FileName}",
+            stream
+        );
+
+        await mediator.Send(command);
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int}/logo")]
+    [Authorize(Roles = UserRoles.Owner)]
+    [EndpointSummary("Delete restaurant logo")]
+    [EndpointDescription("Deletes the logo of a restaurant")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> DeleteRestaurantLogo(int id)
+    {
+        await mediator.Send(new DeleteRestaurantLogoCommand(id));
+        return NoContent();
+    }
 
 }

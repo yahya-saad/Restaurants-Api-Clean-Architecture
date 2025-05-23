@@ -11,6 +11,11 @@ public class RestaurantAuthorizationService(ILogger<RestaurantAuthorizationServi
     {
         var user = userContext.GetCurrentUser();
 
+        if (user == null)
+        {
+            return false;
+        }
+
         logger.LogInformation("Authorization user {UserEmail}, to {Operation} for Resraurant {RestaurantName}",
             user.Email, operation, restaurant.Name);
 
