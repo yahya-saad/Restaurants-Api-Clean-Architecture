@@ -1,0 +1,55 @@
+name: restaurants-api-cd
+on:
+  push:
+    branches: 
+    - master
+  workflow_dispatch:
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3.4.2
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Publish
+        run: dotnet publish ./src/Restaurants.API/Restaurants.API.csproj -o ${{env.DOTNET_ROOT}}/api --no build
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: api-artifact
+          path: ${{env.DOTNET_ROOT}}/api
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment:
+      name: "Development"
+      url: ${{steps.deploy-to-azure-dev.outputs.webapp-url}}
+    needs: build
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v4.3.0
+        with:
+          name: api-artifact
+
+      - name: Azure WebApp
+        id: deploy-to-azure-dev
+        uses: Azure/webapps-deploy@v3.0.1
+        with:
+          app-name: restaurants-api
+          publish-profile: ${{secrets.PUBLISH_PROFILE_DEV}}
+
+
+  
