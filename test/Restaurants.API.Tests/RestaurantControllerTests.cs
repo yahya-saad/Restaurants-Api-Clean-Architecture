@@ -25,8 +25,8 @@ public class RestaurantControllerTests : IClassFixture<WebApplicationFactory<Pro
             {
                 // Remove all existing registrations for IRestaurantsRepository to avoid accidental fallback to the real implementation
                 services.RemoveAll(typeof(IRestaurantsRepository));
-                services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
                 services.AddScoped<IRestaurantsRepository>(_ => _restaurantsRepositoryMock.Object);
+                services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
 
                 services.RemoveAll(typeof(ISeeder));
                 services.AddScoped<ISeeder>(_ => seederMock.Object);

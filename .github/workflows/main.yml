@@ -26,6 +26,8 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Test
+        env:
+            RunMigrations: 'false'
         run: dotnet test
   
       
