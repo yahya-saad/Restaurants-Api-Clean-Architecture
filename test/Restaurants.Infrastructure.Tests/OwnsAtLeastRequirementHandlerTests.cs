@@ -38,7 +38,7 @@ public class OwnsAtLeastRequirementHandlerTests
             .Setup(repo => repo.GetAllAsync(CancellationToken.None))
             .ReturnsAsync(restaurants);
 
-        var requirement = new OwnsAtLeastRequirement(2);
+        var requirement = new OwnsAtLeastRequirement(3);
         var context = new AuthorizationHandlerContext(new[] { requirement }, new ClaimsPrincipal(), null);
 
         await _handler.HandleAsync(context);
