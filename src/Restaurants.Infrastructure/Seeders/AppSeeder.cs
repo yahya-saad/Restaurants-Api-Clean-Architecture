@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
+using Restaurants.Domain.Interfaces;
 
 namespace Restaurants.Infrastructure.Seeders;
 public class AppSeeder(IServiceProvider serviceProvider)

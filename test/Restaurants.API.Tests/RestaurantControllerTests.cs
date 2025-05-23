@@ -16,6 +16,7 @@ public class RestaurantControllerTests : IClassFixture<WebApplicationFactory<Pro
     private readonly WebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
     private readonly Mock<IRestaurantsRepository> _restaurantsRepositoryMock = new();
+    private readonly Mock<ISeeder> seederMock = new();
     public RestaurantControllerTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory.WithWebHostBuilder(cfg =>
@@ -26,6 +27,9 @@ public class RestaurantControllerTests : IClassFixture<WebApplicationFactory<Pro
                 services.RemoveAll(typeof(IRestaurantsRepository));
                 services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
                 services.AddScoped<IRestaurantsRepository>(_ => _restaurantsRepositoryMock.Object);
+
+                services.RemoveAll(typeof(ISeeder));
+                services.AddScoped<ISeeder>(_ => seederMock.Object);
             });
         });
         _client = _factory.CreateClient();
